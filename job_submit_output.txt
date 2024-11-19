@@ -1,0 +1,22 @@
+driverControlFilesUri: gs://dataproc-staging-us-central1-176263025067-bli3u7tm/google-cloud-dataproc-metainfo/39cf4179-997b-46d2-b1b4-4228e1b0b52c/jobs/de827670fe9c4acea31367efc15d0fbb/
+driverOutputResourceUri: gs://dataproc-staging-us-central1-176263025067-bli3u7tm/google-cloud-dataproc-metainfo/39cf4179-997b-46d2-b1b4-4228e1b0b52c/jobs/de827670fe9c4acea31367efc15d0fbb/driveroutput
+jobUuid: 236aceaf-5aa4-3bd3-b649-d1a8765e1135
+placement:
+  clusterName: gmm-cluster-local
+  clusterUuid: 39cf4179-997b-46d2-b1b4-4228e1b0b52c
+pysparkJob:
+  args:
+  - --bucket_name=gcs_buck_1
+  - --input_path=gs://gcs_buck_1/data/scaled_data
+  - --output_path=gs://gcs_buck_1/data/transformed_data
+  - --batch_size=100000
+  - --n_components=10
+  mainPythonFileUri: gs://gcs_buck_1/code/job_package.zip#src/vgm_job.py
+  pythonFileUris:
+  - gs://gcs_buck_1/code/job_package.zip
+reference:
+  jobId: de827670fe9c4acea31367efc15d0fbb
+  projectId: betterdata-441921
+status:
+  state: PENDING
+  stateStartTime: '2024-11-18T21:43:20.194676Z'

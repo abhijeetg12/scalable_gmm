@@ -1,0 +1,30 @@
+# configs/cluster.yaml
+
+config:
+  gceClusterConfig:
+    zoneUri: us-central1-a
+    networkUri: default
+    subnetworkUri: default
+    serviceAccount: default
+    
+  masterConfig:
+    numInstances: 1
+    machineTypeUri: n1-standard-8
+    diskConfig:
+      bootDiskType: pd-ssd
+      bootDiskSizeGb: 100
+      
+  workerConfig:
+    numInstances: 10
+    machineTypeUri: n1-standard-8
+    diskConfig:
+      bootDiskType: pd-standard
+      bootDiskSizeGb: 100
+      
+  secondaryWorkerConfig:
+    numInstances: 0
+    
+  softwareConfig:
+    imageVersion: 2.0-debian10
+    properties:
+      dataproc:dataproc.allow.zero.workers: "false"

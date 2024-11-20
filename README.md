@@ -70,6 +70,28 @@ project/
    - Compromise: Small reduction in precision for significant speed gains
    - Mitigation: Comprehensive validation ensures results meet quality thresholds
 
+4. **Sampling Strategy for GMM Fitting: Technical Deep Dive**
+
+Overview
+The decision to fit Gaussian Mixture Models (GMM) on a subset of data rather than the entire dataset is a strategic optimization that balances statistical accuracy with computational efficiency. Here's a comprehensive analysis of this approach.
+Why Use Sampling?
+a. Statistical Validity
+
+Convergence Properties: GMM parameters (means, covariances, weights) typically converge with a relatively small sample size (100,000-1,000,000 points)
+Law of Large Numbers: Sample statistics approach population parameters as sample size increases
+Sufficient Statistics: GMM parameters are estimated using sufficient statistics that stabilize with adequate sample size
+
+b. Computational Benefits
+
+Memory Efficiency: Reduces RAM requirements from O(n) to O(sample_size)
+Training Speed: EM algorithm complexity reduced from O(nkd) to O(sample_sizekd)
+
+c. Scalability Gains
+
+Linear Scale-up: Can handle billion-row datasets with constant memory
+Faster Iterations: EM algorithm converges faster with smaller datasets
+Resource Optimization: Better utilization of cluster resources
+
 ## Tools and Technologies
 
 - **Framework**: Apache Spark for distributed processing

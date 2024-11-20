@@ -57,8 +57,8 @@ def main():
     
     try:
         # Start with a very small test
-        TEST_SIZE = 100_000  # Start with just 100K records
-        BATCH_SIZE = 10_000
+        TEST_SIZE = 100_000_000  # Start with just 100K records
+        BATCH_SIZE = 10_000_000
         
         print(f"\n2. Starting test run with {TEST_SIZE:,} records")
         input_path = f"gs://{args.bucket_name}/data/Credit.csv"

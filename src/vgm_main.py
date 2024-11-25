@@ -58,34 +58,38 @@ def validate_transformation(validator: DataValidator,
                           inverse_transformed_data: np.ndarray,
                           logger: logging.Logger) -> float:
     """Validate the transformation process using multiple metrics."""
-    # Distribution validation
-    dist_valid, p_value = validator.validate_distribution(
-        original_data, 
-        inverse_transformed_data
-    )
-    logger.info(f"Distribution validation - Valid: {dist_valid}, p-value: {p_value:.4f}")
-    
-    # Bounds validation
-    bounds_valid = validator.validate_bounds(
-        inverse_transformed_data,
-        original_data.min(),
-        original_data.max()
-    )
-    logger.info(f"Bounds validation - Valid: {bounds_valid}")
-    
-    # Moments validation
-    moments_valid, moment_diffs = validator.validate_moments(
-        original_data,
-        inverse_transformed_data
-    )
-    logger.info(f"Moments validation - Valid: {moments_valid}")
-    logger.info(f"Moment differences: {moment_diffs}")
-    
-    # Calculate overall accuracy
-    validations = [dist_valid, bounds_valid, moments_valid]
-    accuracy = sum(validations) / len(validations)
-    
-    return accuracy
+    try:
+        # Distribution validation
+        dist_valid, p_value = validator.validate_distribution(
+            original_data, 
+            inverse_transformed_data
+        )
+        logger.info(f"Distribution validation - Valid: {dist_valid}, p-value: {p_value:.4f}")
+        
+        # Bounds validation
+        bounds_valid = validator.validate_bounds(
+            inverse_transformed_data,
+            original_data.min(),
+            original_data.max()
+        )
+        logger.info(f"Bounds validation - Valid: {bounds_valid}")
+        
+        # Moments validation
+        moments_valid, moment_diffs = validator.validate_moments(
+            original_data,
+            inverse_transformed_data
+        )
+        logger.info(f"Moments validation - Valid: {moments_valid}")
+        logger.info(f"Moment differences: {moment_diffs}")
+        
+        # Calculate overall accuracy
+        validations = [dist_valid, bounds_valid, moments_valid]
+        accuracy = sum(validations) / len(validations)
+        
+        return accuracy
+    except Exception as e:
+        logger.error(f"Error in validation: {str(e)}")
+        return 0.0  # Return 0 accuracy on validation error
 
 def main():
     """Main execution function with comprehensive error handling and validation."""
@@ -98,6 +102,9 @@ def main():
         # Initialize Spark
         spark = create_spark_session()
         logger.info("Initialized Spark session")
+        
+        # Start metrics collection
+        metrics_collector.start_operation()
         
         # Load and prepare data
         logger.info(f"Loading data from {args.input_path}")
@@ -115,9 +122,6 @@ def main():
             batch_size=args.batch_size,
             eps=0.005
         )
-        
-        # Start metrics collection
-        metrics_collector.start_operation()
         
         # Initialize and fit VGM model
         logger.info("Initializing and fitting VGM model")
@@ -144,17 +148,15 @@ def main():
             sample_inverse = sample_inverse[:min_size]
         
         # Perform validation
-
-        # # Perform validation
         accuracy = validate_transformation(
             validator,
             sample_original,
-            None,
+            None,  # transformed_data is not needed for validation
             sample_inverse,
             logger
         )
         
-        # # Record metrics (without memory tracking)
+        # Record metrics
         transform_metrics = metrics_collector.end_operation(
             records_processed=total_records,
             accuracy=accuracy
@@ -169,7 +171,8 @@ def main():
         # Log final metrics
         logger.info("Job completed successfully")
         logger.info(f"Transform metrics: {transform_metrics}")
-        logger.info(f"Performance summary: {metrics_collector.get_summary()}")
+        summary = metrics_collector.get_summary()
+        logger.info(f"Performance summary: {summary}")
         
     except Exception as e:
         logger.error(f"Error in VGM processing: {str(e)}", exc_info=True)

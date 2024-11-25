@@ -91,8 +91,8 @@ def main():
     """Main execution function with comprehensive error handling and validation."""
     logger = setup_logging()
     args = parse_arguments()
-    # metrics_collector = MetricsCollector()
-    # validator = DataValidator(threshold=args.validation_threshold)
+    metrics_collector = MetricsCollector()
+    validator = DataValidator(threshold=args.validation_threshold)
     
     try:
         # Initialize Spark
@@ -146,19 +146,19 @@ def main():
         # Perform validation
 
         # # Perform validation
-        # accuracy = validate_transformation(
-        #     validator,
-        #     sample_original,
-        #     None,
-        #     sample_inverse,
-        #     logger
-        # )
+        accuracy = validate_transformation(
+            validator,
+            sample_original,
+            None,
+            sample_inverse,
+            logger
+        )
         
         # # Record metrics (without memory tracking)
-        # transform_metrics = metrics_collector.end_operation(
-        #     records_processed=total_records,
-        #     accuracy=accuracy
-        # )
+        transform_metrics = metrics_collector.end_operation(
+            records_processed=total_records,
+            accuracy=accuracy
+        )
         
         # Save transformed data
         logger.info(f"Saving transformed data to {args.output_path}")
@@ -168,8 +168,8 @@ def main():
         
         # Log final metrics
         logger.info("Job completed successfully")
-        # logger.info(f"Transform metrics: {transform_metrics}")
-        # logger.info(f"Performance summary: {metrics_collector.get_summary()}")
+        logger.info(f"Transform metrics: {transform_metrics}")
+        logger.info(f"Performance summary: {metrics_collector.get_summary()}")
         
     except Exception as e:
         logger.error(f"Error in VGM processing: {str(e)}", exc_info=True)

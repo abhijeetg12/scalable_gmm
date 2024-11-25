@@ -117,7 +117,7 @@ def main():
         )
         
         # Start metrics collection
-        # metrics_collector.start_operation()
+        metrics_collector.start_operation()
         
         # Initialize and fit VGM model
         logger.info("Initializing and fitting VGM model")
